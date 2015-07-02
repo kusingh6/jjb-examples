@@ -1,0 +1,62 @@
+- project:
+    name: CLEANUP-PIPELINE
+    dependent-name: '{name}-BUILD'
+    folder: EXAMPLES
+    jobs:
+      - '{name}-PRE'
+      - '{name}-MAIN1'
+      - '{name}-MAIN2'
+      - '{name}-CLEANUP'
+
+- job-template:
+    name: '{name}-PRE'
+    description: '{name} PRE [{branch}]'
+    display-name: '{name} PRE [{branch}]'
+    builders:
+      - shell: |
+          #!/bin/bash
+          echo "Executing..."
+          sleep 2
+          exit 0
+    publishers:
+      - trigger:
+          project: "{name}-MAIN1, {name}-MAIN2"
+          threshold: SUCCESS
+      - trigger-parameterized-builds:
+          - project: 
+            - "{name}-CLEANUP"
+
+
+- job-template:
+    name: '{name}-MAIN1'
+    description: '{name} MAIN1 [{branch}]'
+    display-name: '{name} MAIN1 [{branch}]'
+    builders:
+      - shell: |
+          #!/bin/bash
+          echo "Executing..."
+          sleep 2
+          exit 0
+
+- job-template:
+    name: '{name}-MAIN2'
+    description: '{name} MAIN2 [{branch}]'
+    display-name: '{name} MAIN2 [{branch}]'
+    builders:
+      - shell: |
+          #!/bin/bash
+          echo "Executing..."
+          sleep 4
+          exit 1
+
+- job-template:
+    name: '{name}-CLEANUP'
+    description: '{name} CLEANUP [{branch}]'
+    display-name: '{name} CLEANUP [{branch}]'
+    builders:
+      - shell: |
+          #!/bin/bash
+          echo "Executing..."
+          sleep 2
+          exit 0
+
