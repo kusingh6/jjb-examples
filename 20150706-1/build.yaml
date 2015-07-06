@@ -1,0 +1,28 @@
+- project:
+    name: GRADLE1
+    dependent-name: '{name}-GRADLE1'
+    jobs:
+      - '{name}-GRADLE1'
+
+- job-template:
+    name: '{name}-GRADLE1'
+    description: '{name} GRADLE1 '
+    display-name: '{name} GRADLE1 '
+    scm:
+      - git:
+          url: https://github.com/spockframework/spock-example
+          browser: bitbucketweb
+          browser-url: https://github.com/spockframework/spock-example
+          timeout: 5
+          wipe-workspace: false
+          skip-tag: true
+    builders:
+      - shell: |
+          ./gradlew clean build
+    publishers:
+      - performance:
+          failed-threshold: 0
+          unstable-threshold: 0
+          report:
+              - jmeter: "**/TEST-*.xml"
+
